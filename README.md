@@ -26,7 +26,6 @@ When you run the application, a **console-based menu** will appear with the foll
   - **Title** or **Author**
   - **Number of available copies**
 
----
 ### 👤 User Options
 - 📖 **View** all books in the library  
 - 📥 **Lend** (borrow) a book  
