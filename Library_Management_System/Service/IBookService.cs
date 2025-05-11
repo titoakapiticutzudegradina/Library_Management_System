@@ -16,7 +16,5 @@ namespace Library_Management_System.Service
         void Delete(int id);                                        //Delete a book from the repository
         List<Book> Search(int id, string text);                     //Search form books by the title or author 
         List<Book> SearchBetween(int lowerBound, int upperBound);   //Search for books by the quantity
-        bool LendBook(int  id);                                     //Lend a book to a costumer from the repository
-        bool ReturnBook(int id);                                    //Return a lended book to the repository
     }
 }

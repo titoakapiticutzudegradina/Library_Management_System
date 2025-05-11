@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Library_Management_System.Domain;
 using Library_Management_System.Repository;
+using Library_Management_System.Validators;
 
 namespace Library_Management_System.Service
 {
     internal class BookService : IBookService
     {
         private readonly BookRepository _repo = new();
+        private readonly BookValidator _validator = new();
 
         public List<Book> GetAll() => _repo.GetAll();
 
@@ -19,6 +21,10 @@ namespace Library_Management_System.Service
 
         public void Add(Book book)
         {
+            if (!_validator.ValidateBook(book))
+            {
+                throw new Exception("Invalid book");
+            }
             var books = _repo.GetAll();
             books.Add(book);
             _repo.SaveAll(books);
@@ -26,6 +32,10 @@ namespace Library_Management_System.Service
 
         public void Update(Book bookToBeUpdated)
         {
+            if (!_validator.ValidateBook(bookToBeUpdated))
+            {
+                throw new Exception("Invalid book");
+            }
             var books = _repo.GetAll();
             var index = books.FindIndex(b => b.ID == bookToBeUpdated.ID);
             if(index != -1)
@@ -45,6 +55,10 @@ namespace Library_Management_System.Service
             {
                 books.Remove(book);
                 _repo.SaveAll(books);
+            }
+            else
+            {
+                throw new Exception("Book not found");
             }
         }
 
@@ -81,7 +95,15 @@ namespace Library_Management_System.Service
         }
 
         public List<Book> SearchBetween(int lowerBound, int upperBound)
-        { 
+        {
+            if (lowerBound < 0 || upperBound < 0)
+            {
+                throw new ArgumentOutOfRangeException("The quantity cannot be negative");
+            }
+            if (lowerBound % 1 != 0 || upperBound % 1 != 0)
+            {
+                throw new ArgumentOutOfRangeException("The quantity must be an integer");
+            }
             var books = _repo.GetAll();
             List<Book> searchBetween = new List<Book>();
             foreach(var book in books)
@@ -98,32 +120,6 @@ namespace Library_Management_System.Service
                 }
             }
             return searchBetween;
-        }
-
-        public bool LendBook(int id)
-        {
-            var books = _repo.GetAll();
-            var book = books.FirstOrDefault(b => b.ID == id);
-            if(book != null && book.Quantity > 0)
-            {
-                book.Quantity -= 1;
-                _repo.SaveAll(books);
-                return true;
-            } 
-            return false;
-        }
-
-        public bool ReturnBook(int id)
-        {
-            var books = _repo.GetAll();
-            var book = books.FirstOrDefault(b => b.ID == id);
-            if(book != null && book.Quantity > book.Quantity)
-            {
-                book.Quantity += 1;
-                _repo.SaveAll(books);
-                return true;
-            }
-            return false;
         }
     }
 }

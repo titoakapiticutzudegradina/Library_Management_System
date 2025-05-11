@@ -27,7 +27,7 @@ namespace Library_Management_System.Domain
         //Getters adn Setters
         public int ID
         { 
-            get { return id;  } 
+            get { return id; } 
             set { id = value;} 
         }
         public string Title
